@@ -1,2 +1,2 @@
-# php-study
+# python-study
 personal learning note.

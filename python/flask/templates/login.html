@@ -1,0 +1,8 @@
+<h2>{{ message }}</h2>
+{% if not login %}
+<form action="/login" method="post">
+  <p><input name="username" value="{{ username }}"></p>
+  <p><input name="password" type="password"></p>
+  <p><button type="submit">Sign In</button></p>
+</form>
+{% endif %}

@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>flaskr</title>
+</head>
+<body>
+  <h2>flaskr</h2>
+  {% if session.logged_in %}
+    <a href="{{ url_for('logout') }}">logout</a>
+  {% else %}
+    <a href="{{ url_for('login') }}">login</a>
+  {% endif %}
+  <hr>
+  {% for message in get_flashed_messages() %}
+  <p style="background-color: gray">{{ message }}</p>
+  {% endfor %}
+  <form method="post" action="{{ url_for('add') }}">
+    title: <input type="text" name="title"/>
+    text:<textarea name="text"></textarea>
+    <button type="submit">submit</button>
+  </form>
+  <hr>
+  <h3>entries</h3>
+  <ul>
+    {% for entry in entries %}
+      <li>{{ entry.title }}: {{ entry.text }}</li>
+    {% endfor %}
+  </ul>
+</body>
+</html>

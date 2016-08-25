@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>flaskr</title>
+</head>
+<body>
+  <h2>flaskr</h2>
+  {% if error %}
+    <hr>
+    <h3><i>{{ error }}</i></h3>
+    <hr>
+  {% endif %}
+  <form method="post" action="{{ url_for('login') }}">
+    name: <input type="text" name="username"/>
+    password:<input type="text" name="password"/>
+    <button type="submit">submit</button>
+  </form>
+  <hr>
+</body>
+</html>

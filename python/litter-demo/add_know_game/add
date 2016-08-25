@@ -1,0 +1,72 @@
+#include   <stdio.h>
+#include   <math.h>
+
+bool   g_same;   //true:   (x <=y);   false:(x <y)
+
+//已知两个1~30之间的数字，甲知道两数之和，乙知道两数之积。
+bool   cond0   (int   x,   int   y)
+{
+  return
+    (g_same ? (x <= y) : (x   <   y)) && (x   > =   1)   &&   (x   <=   30)   &&   (y   > =   1)   &&   (y   <=   30);
+}
+
+　　//   甲问乙：“你知道是哪两个数吗？”乙说：“不知道”；
+　　//   (   =>   B=x*y   有多解   )
+　　bool   cond1   (int   x,   int   y)
+　　{
+  　　int   i,   s=x*y,   k=0   ;
+  　　for   (i   =   1   ;   i   <=   sqrt(s)   ;   i++)
+    　　if   ((s   %   i   ==   0)   &&   cond0(i,s/i))   k++   ;
+  　　return   (k   > =   2);
+  　　}
+
+　　//   乙问甲：“你知道是哪两个数吗？”甲说：“也不知道”；
+　　//   (   =>   A=x+y   有多解   且每种解满足条件1   )
+　　bool   cond2   (int   x,   int   y)
+　　{
+  　　int   i,   s   =   x+y,   k   =   0   ;
+  　　for   (i   =   1   ;   i   <=   s   /   2   ;   i++)
+    　　if   (cond0(i,s-i)   &&   cond1(i,s-i))   k++   ;
+  　　return   (k   > =   2);
+  　　}
+
+　　//   于是，乙说：“那我知道了”；
+　　//   (   =>   乙根据   条件1，条件2   得出唯一解   )
+　　bool   cond3   (int   x,   int   y)
+　　{
+  　　int   i,   s=x*y,   k=0   ;
+  　　for   (i   =   1   ;   i   <=   sqrt(s)   ;   i++)
+    　　if   ((s   %   i   ==   0)   &&   cond0(i,s/i)   &&   cond1(i,s/i)   &&   cond2(i,s/i))   k++   ;
+  　　return   (k   ==   1);
+  　　}
+
+　　//   随后甲也说：“那我也知道了”；
+　　//   (   =>   甲根据   条件1，条件2,   条件3   得出唯一解   )
+　　bool   cond4   (int   x,   int   y)
+　　{
+  　　int   i,   s   =   x+y,   k   =   0   ;
+  　　for   (i   =   1   ;   i   <=   s   /   2   ;   i++)
+    　　if   (cond0(i,s-i)   &&   cond1(i,s-i)   &&   cond2(i,s-i)   &&   cond3(i,s-i))   k++   ;
+  　　return   (k   ==   1);
+  　　}
+
+　　//   解毕
+　　void   main   (void)
+　　{
+  　　int   i,   j;
+
+  　　g_same=true;   //允许重复
+  　　printf( "condition:   (1   <=   x   <=   y   <=   30)\n ");
+  　　for   (i   =   1   ;   i   <=   30   ;   i++)
+    　　for   (j   =   1   ;   j   <=   30   ;   j++)
+    　　if   (cond0(i,j)   &   cond1(i,j)   &   cond2(i,j)   &   cond3(i,j)   &   cond4(i,j))
+    　　printf   ( "x=%d,\ty=%d,\tx+y=%d,\tx*y=%d\n ",i,j,i+j,i*j)   ;
+
+  　　g_same=false;   //不允许重复
+  　　printf( "\ncondition:   (1   <=   x   <   y   <=   30)\n ");
+  　　for   (i   =   1   ;   i   <=   30   ;   i++)
+    　　for   (j   =   1   ;   j   <=   30   ;   j++)
+    　　if   (cond0(i,j)   &   cond1(i,j)   &   cond2(i,j)   &   cond3(i,j)   &   cond4(i,j))
+    　　printf   ( "x=%d,\ty=%d,\tx+y=%d,\tx*y=%d\n ",i,j,i+j,i*j)   ;
+
+  　　}
