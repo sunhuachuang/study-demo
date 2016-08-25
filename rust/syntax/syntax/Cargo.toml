@@ -1,0 +1,4 @@
+[package]
+name = "yufa"
+version = "0.1.0"
+authors = ["sun <sun@webimpact.co.jp>"]
