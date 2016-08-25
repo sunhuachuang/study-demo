@@ -1,2 +1,2 @@
-# study_demo
-personal study demo code.
+# php-study
+personal learning note.
