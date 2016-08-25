@@ -1,2 +1,2 @@
-# python-study
-personal learning note.
+# study_demo
+personal learning code.
