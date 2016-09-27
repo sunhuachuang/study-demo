@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>users</title>
+</head>
+<body>
+  <h2>users</h2>
+  <h3>register</h3>
+  {% if error %}
+    <hr>
+    <h3><i>{{ error }}</i></h3>
+    <hr>
+  {% endif %}
+  <form method="post" action="{{ url_for('register') }}">
+    name: <input type="text" name="username"/>
+    password:<input type="text" name="password"/>
+    <button type="submit">register</button>
+    <a href="{{ url_for('index') }}">login</a>
+  </form>
+  <hr>
+</body>
+</html>

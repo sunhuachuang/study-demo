@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>users</title>
+</head>
+<body>
+  <h2>users</h2>
+  {% for message in get_flashed_messages() %}
+  <p style="background-color: gray">{{ message }}</p>
+  {% endfor %}
+  {% if error %}
+    <hr>
+    <h3><i>{{ error }}</i></h3>
+    <hr>
+  {% endif %}
+  <form method="post" action="{{ url_for('index') }}">
+    name: <input type="text" name="username"/>
+    password:<input type="text" name="password"/>
+    <button type="submit">login</button>
+    <a href="{{ url_for('register') }}">register</a>
+  </form>
+  <hr>
+</body>
+</html>

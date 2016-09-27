@@ -6,18 +6,17 @@ import time
 import ssl
 import multiprocessing
 
-#13 发送和接受大型数组 memoryviews
+#13  发送和接受大型数组  memoryviews
 def send_from(arr, dest):
     view = memoryview(arr).cast('B')
     while len(view):
         nsent = dest.send(view)
         view = view[nsent:]
-
-def recv_into(arr, source):
-    view = memoryview(arr).cast('B')
-    while len(view):
-        nrecv = source.recv_into(view)
-        view = view[nrecv:]
+    def recv_into(arr, source):
+        view = memoryview(arr).cast('B')
+        while len(view):
+            nrecv = source.recv_into(view)
+            view = view[nrecv:]
 
 # test
 #server
@@ -40,7 +39,7 @@ a[0:10]
 recv_into(a, c)
 a[0:10]
 
-#12 理解事件驱动的IO
+#12  理解事件驱动的 IO
 class EventHandler:
     def fileno(self):
         'Return the associated file descriptor'
@@ -164,9 +163,9 @@ class TCPEchoClient(TCPClient):
             self.outgoing.extend(data)
 
 if __name__ == '__main__':
-   handlers = []
-   handlers.append(TCPServer(('',16000), TCPEchoClient, handlers))
-   event_loop(handlers)
+    handlers = []
+    handlers.append(TCPServer(('',16000), TCPEchoClient, handlers))
+    event_loop(handlers)
 
 from concurrent.futures import ThreadPoolExecutor
 import os
@@ -211,9 +210,9 @@ class ThreadPoolHandler(EventHandler):
         for callback, result in self.pending:
             callback(result)
             self.done_sock.recv(1)
-        self.pending = []
+            self.pending = []
 
-#11 进程间传递socket文件描述符 multiprocessing
+#11  进程间传递 socket 文件描述符  multiprocessing
 from multiprocessing.reduction import recv_handle, send_handle
 import socket
 
@@ -316,7 +315,7 @@ if __name__ == '__main__':
     worker(sys.argv[1])
 
 
-#　套接字
+#　 套接字
 # server.py
 import socket
 
@@ -366,7 +365,7 @@ def recv_fd(sock):
     Receive a single file descriptor
     '''
     msg, ancdata, flags, addr = sock.recvmsg(1,
-                                     socket.CMSG_LEN(struct.calcsize('i')))
+                                             socket.CMSG_LEN(struct.calcsize('i')))
 
     cmsg_level, cmsg_type, cmsg_data = ancdata[0]
     assert cmsg_level == socket.SOL_SOCKET and cmsg_type == socket.SCM_RIGHTS
@@ -397,7 +396,7 @@ if __name__ == '__main__':
     worker(sys.argv[1])
 
 exit(1)
-#10 在网络服务中加入SSL ssl模块
+#10  在网络服务中加入 SSL ssl 模块
 KEYFILE = 'privatekey.pem'
 CERTFILE = 'cert.pem'
 def echo_client(s):
@@ -407,8 +406,8 @@ def echo_client(s):
             s.send(b'connection closed')
             break
         s.send(data)
-    s.close()
-    print('Connection closed')
+        s.close()
+        print('Connection closed')
 
 def echo_server(address):
     s = socket(AF_INET, SOCK_STREAM)
@@ -435,7 +434,7 @@ s_ssl.send(b'aaaa')
 s_ssl.recv()
 
 exit(1)
-#9 简单的客户端认证 hmac
+#9  简单的客户端认证  hmac
 import os, hmac
 def client_authenticate(connection, secert_key):
     message = connection.recv(32)
@@ -481,7 +480,7 @@ s.send(b'hello world')
 resp = s.recv(1024)
 
 exit(1)
-#8 实现远程方法调用
+#8  实现远程方法调用
 import pickle
 class RPCHandler:
     def __init__(self):
@@ -524,7 +523,7 @@ handler.register_function(sub)
 
 rpc_server(handler, ('localhost', 20000), authkey=b'sun')
 
-#rpc发送请求的代理类
+#rpc 发送请求的代理类
 import pickle
 class RPCProxy:
     def __init__(self, connection):
@@ -546,7 +545,7 @@ proxy = RPCProxy(c)
 proxy.add(2, 3)
 proxy.sub(2, 3)
 
-#7 在不同的python解析器之间互动 multiprocessing.connection
+#7  在不同的 python 解析器之间互动  multiprocessing.connection
 from multiprocessing.connection import Listener
 import traceback
 def echo_client(conn):
@@ -576,7 +575,7 @@ c.send('hello')
 c.recv()
 
 exit(1)
-#6 通过XML-RPC实现简单的远程调用
+#6  通过 XML-RPC 实现简单的远程调用
 from xmlrpc.server import SimpleXMLRPCServer
 
 class KeyValueServer:
@@ -622,14 +621,14 @@ s.delete('foo')
 s.exists('foo')
 
 exit(1)
-#5 创建一个简单的rest接口
+#5  创建一个简单的 rest 接口
 import cgi
 
 def notfound_404(environ, start_response):
     start_response('404 Not found', [('Content-type', 'text/plain')])
     return [b'Not found']
 
-# 调度器
+#  调度器
 class PathDispatcher:
     def __init__(self):
         self.pathmap = {}
@@ -651,8 +650,8 @@ class PathDispatcher:
 
 _hello_resp = '''
 <html>
-  <head>
-     <title>Hello {name}</title>
+   <head>
+       <title>Hello {name}</title>
    </head>
    <body>
      <h1>Hello {name}!</h1>
@@ -667,15 +666,15 @@ def hello_world(environ, start_response):
     yield resp.encode('utf-8')
 
 _localtime_resp = '''\
-<?xml version="1.0"?>
-<time>
-  <year>{t.tm_year}</year>
-  <month>{t.tm_mon}</month>
-  <day>{t.tm_mday}</day>
-  <hour>{t.tm_hour}</hour>
-  <minute>{t.tm_min}</minute>
-  <second>{t.tm_sec}</second>
-</time>
+ <?xml version="1.0"?>
+ <time>
+   <year>{t.tm_year}</year>
+   <month>{t.tm_mon}</month>
+   <day>{t.tm_mday}</day>
+   <hour>{t.tm_hour}</hour>
+   <minute>{t.tm_min}</minute>
+   <second>{t.tm_sec}</second>
+ </time>
 '''
 def localtime(environ, start_response):
     start_response('200 OK', [ ('Content-type', 'application/xml') ])
@@ -693,13 +692,13 @@ if __name__ == '__main__':
     httpd.serve_forever()
 
 exit(1)
-#4 通过CIDR地址生成对应的IP地址集 ipaddress模块
+#4  通过 CIDR 地址生成对应的 IP 地址集  ipaddress 模块
 import ipaddress
 net = ipaddress.ip_network('123.45.67.64/27')
 print(net) # IPv4Network('123.45.67.64/27')
 for n in net:
     pass
-    #print(n)
+#print(n)
 
 print(net.num_addresses)        #32
 print(net[0])                   #123.45.67.64
@@ -716,7 +715,7 @@ print(inet.network) #123.45.67.64/27 str()
 print(inet.ip) #123.45.67.64
 
 exit(1)
-#3 创建UDP服务器
+#3  创建 UDP 服务器
 class TimeHandler(BaseRequestHandler):
     def handle(self):
         print('Got connection from', self.client_address)
@@ -730,7 +729,7 @@ if __name__ == '__main__':
 
 exit(1)
 
-#2 创建tcp服务器 socketserver
+#2  创建 tcp 服务器  socketserver
 class EchoHandler(BaseRequestHandler):
     def handle(self):
         print('Got connection from', self.client_address)
@@ -747,8 +746,8 @@ class StreamHandler(StreamRequestHandler):
             self.wfile.write(line)
 
 if __name__ == '__main__':
-    serv = TCPServer(('', 20000), EchoHandler) #单用户
-    #serv = ThreadingTCPServer(('', 20000), EchoHandler)多用户
+    serv = TCPServer(('', 20000), EchoHandler) # 单用户
+    #serv = ThreadingTCPServer(('', 20000), EchoHandler) 多用户
     serv.serve_forever()
 
 # security action
@@ -760,9 +759,9 @@ if __name__ == '__main__':
         t = Thread(target=serve_forever)
         t.daemon = True
         t.start()
-    serv.serve_forever
+        serv.serve_forever
 
-# 服务器实现
+#  服务器实现
 from socket import socket, AF_INET, SOCK_STREAM
 def echo_handler(address, client_sock):
     print('Got connetction from {}'.format(address))
@@ -771,7 +770,7 @@ def echo_handler(address, client_sock):
         if not msg:
             break
         client_sock.sendall(msg)
-    client_sock.close()
+        client_sock.close()
 
 def echo_server(address, backlog=5):
     sock = socket(AF_INET, SOCK_STREAM)
@@ -785,7 +784,7 @@ if __name__ == '__main__':
     echo_server(('', 20000))
 
 exit(1)
-#1 作为客户端与ｈｔｔｐ服务交互　测试站点 http://httpbin.org
+#1  作为客户端与 ｈｔｔｐ 服务交互 　 测试站点  http://httpbin.org
 url = 'http://127.0.0.1:5000/'
 
 params = {
@@ -807,9 +806,9 @@ print(resp)
 
 # header
 headers = {
-    'User-agent': 'none/ofyourbusiness',
-    'Spam': 'Eggs',
-    'Token': 'aaaaaaaa'
+     'User-agent': 'none/ofyourbusiness',
+     'Spam': 'Eggs',
+     'Token': 'aaaaaaaa'
 }
 
 req = request.Request(url, querystring.encode('ascii'), headers=headers)
@@ -817,7 +816,7 @@ u = request.urlopen(req)
 resp = u.read()
 print(resp)
 
-# requests 库
+# requests  库
 resp = requests.post(url, data=params, headers=headers)
 text = resp.text
 print(text)
@@ -843,7 +842,7 @@ files = {'file': ('data.csv', open('tmp/data.d', 'rb'))}
 resp = requests.post(url, files=files)
 print(resp)
 
-#　底层库 http.client
+#　 底层库  http.client
 from http.client import HTTPConnection
 
 c = HTTPConnection('www.python.org', 80)
@@ -853,7 +852,7 @@ print('status:', resp.status)
 for name, value in resp.getheaders():
     print(name, ':', value)
 
-#　实现auth
+#　 实现 auth
 auth = urllib.request.HTTPBasicAuthHandler()
 auth.add_password('pypi','http://pypi.python.org','username','password')
 opener = urllib.request.build_opener(auth)
