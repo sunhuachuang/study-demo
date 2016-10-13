@@ -6,4 +6,4 @@ app = Flask(__name__)
 def home():
     return 'hello word'
 
-# gunicorn -w 4 -b 127.0.0.1:4000 hello_world_gunicorn:app
+# gunicorn -k gevent -w 4 -b 127.0.0.1:4000 hello_world_gunicorn:app 9000多
