@@ -5,7 +5,7 @@ n = 100000;
 
 a = [True for i in range(0, n)]
 
-for x in range(2, int(math.sqrt(n))):
+for x in range(2, int(math.sqrt(n))+1):
     for y in range(2, int(n/x)+1):
         if x*y-1 <= n:
             a[y*x-1] = False;
