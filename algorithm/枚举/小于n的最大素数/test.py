@@ -12,4 +12,4 @@ else:
         else:
             prime_numbers.append(x);
 
-print(prime_numbers.pop());
+print(prime_numbers.pop()); #5.90s user 0.01s system 99% cpu 5.908 total
