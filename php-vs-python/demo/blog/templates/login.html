@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+
+{% block contaiter %}
+<form class="form" name="register" method="POST">
+  <div class="row" style="padding-top: 10px;">
+    <input type="text" class="form-control" name="username" placeholder="username"/>
+  </div>
+  <div class="row" style="padding-top: 20px;">
+    <input type="text" class="form-control" name="password" placeholder="password"/>
+  </div>
+  <div class="text-center" style="padding-top: 20px;">
+    <button type="submit" class="btn">login</button>
+  </div>
+</form>
+{% endblock %}

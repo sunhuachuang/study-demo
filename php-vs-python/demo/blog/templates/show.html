@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+
+{% block contaiter %}
+  {% if get_flashed_messages() %}
+  <div class="alert alert-warning">
+    {{ get_flashed_messages()[0] }}
+  </div>
+ {% endif %}
+ <div class="panel panel-info">
+   <div class="panel-heading">
+     <h3 class="panel-title">{{ article['title'] }}</h3>
+   </div>
+   <div class="panel-body">
+     {{ article['content'] }}
+   </div>
+ </div>
+ <hr></hr>
+ {% for comment in comments %}
+   <p>{{ comment['content']}}</p>
+ {% endfor %}
+ <hr></hr>
+ <div class="container">
+   <form class="form" name="new_comment" method="post">
+     <div class="row" style="padding-top: 10px;">
+       <textarea rows="3" class="form-control" placeholder="content..." name="content"></textarea>
+     </div>
+     <div class="text-center" style="padding-top: 10px;">
+       <button type="submit" class="btn">comment</button>
+     </div>
+   </form>
+ </div>
+{% endblock %}

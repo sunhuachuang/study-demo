@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+
+{% block contaiter %}
+<div class="starter-template">
+  <h1>Blog</h1>
+  {% if get_flashed_messages() %}
+  <div class="alert alert-warning">
+    {{ get_flashed_messages()[0] }}
+  </div>
+  {% endif %}
+</div>
+{% for article in articles %}
+<div class="panel panel-info">
+  <div class="panel-heading">
+    <h3 class="panel-title"><a href="{{ url_for('show', article_id=article['id']) }}">{{ article['title'] }}</a></h3>
+  </div>
+  <div class="panel-body">
+    {{ article['content'] }}
+  </div>
+</div>
+{% endfor %}
+{% endblock %}

@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+
+{% block contaiter %}
+  {% if get_flashed_messages() %}
+  <div class="alert alert-warning">
+    <strong>Warning!</strong>{{ get_flashed_messages()[0] }}
+  </div>
+  {% endif %}
+  <div class="container">
+    <form class="form" name="register" method="POST">
+      <div class="row" style="padding-top: 10px;">
+        <input type="text" class="form-control" name="username" placeholder="username"/>
+      </div>
+      <div class="row" style="padding-top: 20px;">
+        <input type="text" class="form-control" name="password" placeholder="password"/>
+      </div>
+      <div class="text-center" style="padding-top: 20px;">
+        <button type="submit" class="btn">register</button>
+      </div>
+    </form>
+    </div>
+  </div>
+{% endblock %}
