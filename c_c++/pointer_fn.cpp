@@ -2,7 +2,7 @@
 
 using namespace std;
 
-int change(int *p1, int *p2) {
+void change(int *p1, int *p2) {
   int x = 0;
   x = *p1;
   *p1 = *p2;
@@ -10,7 +10,7 @@ int change(int *p1, int *p2) {
 }
 
 //read-only location
-int change2(const int *p1, const int *p2) {
+void change2(const int *p1, const int *p2) {
   cout << &p1 <<endl;
   cout << &p2 <<endl;
 }
