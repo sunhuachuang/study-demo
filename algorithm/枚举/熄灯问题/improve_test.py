@@ -6,15 +6,15 @@ a = [
     [True, True, True, True, True, True]
 ]
 
-def take_action(prev_status, status, line, actions):
+def take_action(status, actions, line):
     for i in range(0, 6):
-        if prev_status[i]:
-            actions[line][i] = True
-            status = changeStatus(status, line, i)
+        if status[line][i]:
+            actions[line+1][i] = True
+            status = changeStatus(status, line+1, i)
         else:
-            actions[line][i] = False
+            actions[line+1][i] = False
 
-    if line == 4:
+    if line == 3:
         for n in status[4]:
             if n:
                 return False
@@ -23,7 +23,7 @@ def take_action(prev_status, status, line, actions):
         print("actions:")
         return actions
     else:
-        return take_action(status[line], status, line+1, actions)
+        return take_action(status, actions, line+1)
 
 def changeStatus(status, point_x, point_y):
     status[point_x][point_y] = not status[point_x][point_y]
@@ -47,22 +47,21 @@ def loop(status):
         [False, False, False, False, False, False],
         [False, False, False, False, False, False]
     ]
-    t = (False, True)
-    for a1 in t:
-        for a2 in t:
-            for a3 in t:
-                for a4 in t:
-                    for a5 in t:
-                        for a6 in t:
-                            first_action = [a1, a2, a3, a4, a5, a6]
-                            for key, n in enumerate(first_action):
-                                if n:
-                                    status = changeStatus(status, 0, key)
 
-                            result_actions = take_action(status[0], status, 1, actions)
-                            if result_actions:
-                                result_actions[0] = first_action
-                                return result_actions
+    a = 0
+    for n in range(0, 2**6):
+        s = '0' * (8 - len(bin(a))) + str(bin(a))[2::]
+        actions[0] = [bool(int(i)) for i in s]
+
+        for key, n in enumerate(actions[0]):
+            if n:
+                status = changeStatus(status, 0, key)
+
+        result_actions = take_action(status, actions, 0)
+        if result_actions:
+            return result_actions
+        a += 1
+
     return None
 
 b = loop(a)
