@@ -1,3 +1,41 @@
+class TestNumber
+  attr_accessor :value
+  def +(other)
+    @value + other + other
+  end
+end
+
+t = TestNumber.new
+t.value = 1
+puts t + 2 #5
+
+# 数组定义的几种方式
+a = [1, 2, 3]
+a = *(1..3)
+
+a = ('1'..'3').to_a #["1", "2", "3"]
+a = %w(1 2 3) #["1", "2", "3"]
+a = *?1..?3 #["1", "2", "3"]
+
+a = Array.new([1, 2, 3])
+a = Array[*(1..3)]
+a = Array.new(3, 0)
+a = Array.new(3) { |i| (i+1).to_s } # 从0开始
+
+a = 1.step(10, 3).to_a
+a = [] << 1 << 2 << 3
+
+plus_one = 1.method(:+)
+a = Array.new(3, &plus_one)
+
+plus_one = proc {|n| n+1 }
+a = Array.new(3, &plus_one)
+
+a = Array.new(3).map(&:to_i)
+
+1.step(10, 3) #<Enumerator: 1:step(10, 3)>
+3.times #<Enumerator: 3:times
+
 class Test
   attr_accessor :name
 
