@@ -1,3 +1,10 @@
+require './modules.rb'
+OnlyFunction.test
+
+d = Dog.new('aaaaaa')
+d.say_name
+
+exit
 class TestNumber
   attr_accessor :value
   def +(other)

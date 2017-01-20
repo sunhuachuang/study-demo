@@ -2,6 +2,13 @@
 # include 是 实例方法
 # extend  是 类方法
 
+module OnlyFunction
+  module_function
+  def test
+    puts 'this is module functions'
+  end
+end
+
 module Say
   attr :name
   def say_name
