@@ -15,3 +15,11 @@ for 循环代替 for, while, 通过range可循环array, slice, map
 1. 指针传递
 1. defer延迟语句
 1. panic and recover
+
+##### oop && interface
+1. func (p *Person) say() {},  * => pointer
+1. interface can store who implement it. like duck-typing
+1. empty interface can store all type. if in function, like generics
+1. comma-ok panic value, ok = element.(T), switch value := element.(type) {} //type only use in switch
+1. interface support mixin
+1. reflection
