@@ -23,3 +23,7 @@ for 循环代替 for, while, 通过range可循环array, slice, map
 1. comma-ok panic value, ok = element.(T), switch value := element.(type) {} //type only use in switch
 1. interface support mixin
 1. reflection
+
+##### goroutine
+1. make channel, select channel
+1. timeout, default
