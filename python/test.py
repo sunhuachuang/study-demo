@@ -1,5 +1,6 @@
-#!python3
 # -*- coding: utf-8 -*-
+
+import os, sys, re
 
 class Test:
     def __init__(self, name):
@@ -11,6 +12,8 @@ class Test:
 
 t = Test('Tom')
 j = Test('Jack')
+print(t)
+
 print(t.get_name())
 print(j.get_name())
 
