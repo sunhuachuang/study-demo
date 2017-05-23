@@ -109,4 +109,17 @@ fn main() {
     }
 
     println!("{:?}", number2);
+
+    for (i, j) in (5..10).enumerate() {
+        println!("{}: {}", i, j);
+    }
+
+    let lines = "abc
+efg
+hij"
+            .lines();
+
+    for (num, line) in lines.enumerate() {
+        println!("{}: {}", num, line);
+    }
 }

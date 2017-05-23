@@ -31,6 +31,15 @@ fn main() {
      * 浮点数
      * f32 (默认)  f64
      */
+
+
+
+
+
+
+
+
+
     let f1 = 0.2;
     let f2 = 0.2f32;
     assert_eq!(f1, f2);
@@ -66,6 +75,15 @@ fn main() {
      *             元类型: (), 唯一值 ()
      */
 
+
+
+
+
+
+
+
+
+
     let t = true;
     let f: bool = false;
     assert_eq!(t, !f);
@@ -92,7 +110,10 @@ fn main() {
     let arr = [1, 2, 3, 4, 5];
     println!("arr1: {:?}, {}", arr, arr[1]);
     let arr2 = [0; 10];
-    println!("{:?}, arr1.slice: {:?}, {:?}", arr2, &arr[1..3], &arr[1...3]); //#![feature(inclusive_range_syntax)]
+    println!("{:?}, arr1.slice: {:?}, {:?}",
+             arr2,
+             &arr[1..3],
+             &arr[1...3]); //#![feature(inclusive_range_syntax)]
     // arr1: [1, 2, 3, 4, 5], 2
     // [0, 0, 0, 0, 0, 0, 0, 0, 0, 0], arr1.slice: [2, 3], [2, 3, 4]
 
@@ -106,7 +127,7 @@ fn main() {
     println!("{}", points_at);
 
     fn foo(x: i32) -> i32 {
-        return x*2;
+        return x * 2;
     }
 
     let bar: fn(i32) -> i32 = foo;
@@ -121,4 +142,22 @@ fn main() {
     type Point = (i32, i32);
     let p: Point = (1, 2);
     println!("{:?}", p);
+
+    let s = "hello".to_string();
+    use_str(&*s); //string to &str
+
+    let say = "我很好".to_string();
+    for i in say.as_bytes() {
+        println!("{}", i);
+    }
+
+    for i in say.chars() {
+        println!("{}", i);
+    }
+
+    println!("{:?}", say.chars().nth(2));
+}
+
+fn use_str(s: &str) {
+    println!("{}", s);
 }
