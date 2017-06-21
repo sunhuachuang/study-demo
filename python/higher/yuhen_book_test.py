@@ -223,3 +223,74 @@ class User:
 # __setitem__
 # __call__ callable
 # __dir__
+
+
+# 异常
+import warnings
+
+
+def test(n):
+    try:
+        n = n % 2
+    except BaseException:
+        raise Exception('error num')
+    else:
+        warnings.warn("this is else no except")
+    finally:
+        print("this is finally, alway do")
+
+    return n
+
+
+def test(n):
+    # 断言
+    assert n > 0, "n must > 0"
+    print(n)
+
+# 上下文管理器
+# __enter__ 初始化对象。返回上下文信息
+# __exit__ 执行清理操作
+
+
+class MyContext:
+    def __init__(self, name):
+        self._name = name
+
+    def __enter__(self):
+        print("enter: ", self._name)
+        return self._name
+
+    def __exit__(self, exc_type, exc_value, traceback):
+        if exc_type:
+            print(exc_type, ': ', exc_value, '.')
+        print('exit')
+        return True
+
+
+with MyContext('a') as a:
+    print(a)
+
+with MyContext('b'):
+    raise Exception("error message")
+
+with MyContext("aa") as a, MyContext("bb") as b:
+    print(a, b)
+
+
+from contextlib import contextmanager
+
+
+@contextmanager
+def closing(o):
+    print("enter...")
+    yield o
+
+    print("exit...")
+    o.close()
+
+
+with closing(open('xx', 'r')) as f:
+    print(f.readlines())
+
+
+# 装饰器
