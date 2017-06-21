@@ -1,6 +1,9 @@
 # -*- coding: utf-8 -*-
 
-import os, sys, re
+import os
+import sys
+import re
+
 
 class Test:
     def __init__(self, name):
@@ -22,6 +25,8 @@ t.get_name = lambda s: s.name
 print(t.get_name(t))
 
 exit()
+
+
 def a(name, **kwargs):
     print(kwargs)
 
@@ -46,23 +51,22 @@ print(memoryview(a))
 exit(0)
 
 
+print(False == 0)  # True
+print(False > -1)  # True
 
-print( False == 0 ) # True
-print( False > -1 ) # True
-
-print( None == False ) # False
-print( None == 0 )     # False
-print( None == '' )    # False
-print( False == '' )   # False
-print( True == '' )    # False
-print( '' == 0 )       # False
+print(None == False)  # False
+print(None == 0)     # False
+print(None == '')    # False
+print(False == '')   # False
+print(True == '')    # False
+print('' == 0)       # False
 # print( [] > 0 )
-print( [] == False ) # False
-print( [] == 0 )     # False
+print([] == False)  # False
+print([] == 0)     # False
 # print({} > [])
-print( {} == False ) # False
-print( {} == 0 )  # False
-print( {} == [] ) # False
+print({} == False)  # False
+print({} == 0)  # False
+print({} == [])  # False
 # print( False < ' ' )
 
 '''
@@ -82,14 +86,18 @@ exit(0)
 
 import bcrypt
 
+
 def encrypt(password, salt=None):
-    return bcrypt.hashpw(password.encode('utf-8'), salt if salt else bcrypt.gensalt())
+    return bcrypt.hashpw(password.encode('utf-8'),
+                         salt if salt else bcrypt.gensalt())
+
 
 def decrypt(password, hashed):
     if bcrypt.hashpw(password.encode('utf-8'), hashed) == hashed:
         return True
     else:
         return False
+
 
 h = encrypt('123456')
 print(h)
@@ -105,9 +113,11 @@ app = Flask(__name__)
 api_bp = Blueprint('api', __name__)
 api = Api(api_bp)
 
+
 class TodoItem(Resource):
     def get(self, id):
         return {'task': 'Say "Hello, World!"'}
+
 
 api.add_resource(TodoItem, '/todos/<int:id>')
 app.register_blueprint(api_bp)
@@ -124,22 +134,24 @@ from flask_restful import Resource, Api
 app = Flask(__name__)
 api = Api(app)
 
+
 class HelloWorld(Resource):
     def get(self):
         return {'hello': 'world'}
 
+
 api.add_resource(HelloWorld, '/')
-
-
 
 
 class A:
     def hello(self):
         print('A')
 
+
 class B(A):
     name = 'aaa'
     id = 123
+
     def hello(self):
         A.hello(self)
         print('B')
@@ -149,6 +161,7 @@ class B(A):
 
     def __dict__(self):
         return {'id': self.id, 'name': self.name}
+
 
 b = B()
 
@@ -162,25 +175,23 @@ print(b)
 exit(0)
 
 
-
 for i in range(8, -1, -1):
     print(i)
 
 
 def test():
-    print(a+1)
+    print(a + 1)
+
 
 a = 10
 test()
 exit(0)
 
 
-
-
-
 class A:
     def __call__(self):
         print('call from class')
+
 
 a = A()
 a()
@@ -191,6 +202,8 @@ a.__call__()
 exit(0)
 
 import time
+
+
 class Time:
     def __init__(self, func):
         self._wrapped = func
@@ -198,21 +211,25 @@ class Time:
     def __call__(self, *args, **kws):
         start_time = time.time()
         result = self._wrapped(*args, **kws)
-        print('all time is :', time.time()-start_time)
+        print('all time is :', time.time() - start_time)
         return result
 
-    def __get__(self, instance, owner): #针对class method 必须有self参数
+    def __get__(self, instance, owner):  # 针对class method 必须有self参数
         start_time = time.time()
-        result = lambda *args, **kwargs: self._wrapped(instance, *args, **kwargs)
-        print('all time is :', time.time()-start_time)
+        result = lambda *args, **kwargs: self._wrapped(
+            instance, *args, **kwargs)
+        print('all time is :', time.time() - start_time)
         return result
+
 
 @Time
 def func():
     time.sleep(1)
     print('func ok!')
 
+
 func()
+
 
 class Test:
     @Time
@@ -221,9 +238,10 @@ class Test:
         print('method ok!')
 
     @staticmethod
-    def method2(): # no self is ok
+    def method2():  # no self is ok
         time.sleep(1)
         print('method2 ok!')
+
 
 a = Test()
 a.method()
@@ -234,7 +252,7 @@ exit(0)
 import math
 
 x = 1
-a = (lambda x: x+1)(x)
+a = (lambda x: x + 1)(x)
 
 print(a)
 
@@ -245,12 +263,14 @@ s = (x for _ in range(10))
 
 print(list(s))
 
+
 class A:
     x = 2
     g = x * 2
-    gg = (x for _ in range(10)) # x = 1 generator 作用范围在用到生成器的地方
-    ggg = (lambda x: (x for _ in range(10)))(x) # x = 2
+    gg = (x for _ in range(10))  # x = 1 generator 作用范围在用到生成器的地方
+    ggg = (lambda x: (x for _ in range(10)))(x)  # x = 2
     #g = (1 for _ in range(10))
+
 
 print(A.g)
 print(list(A.gg))
@@ -269,23 +289,25 @@ b.sort(key=lambda u: u[0])
 print(b)
 
 
-
 exit(0)
+
 
 def get_line_all_points(point1, point2):
     if point1 == point2:
         return
     line = [point1, point2]
-    a = (point1[1] - point2[1])/(point1[0] - point2[0])
-    b = (point1[0]*point2[1] - point1[1]*point2[0])/(point1[0] - point2[0])
+    a = (point1[1] - point2[1]) / (point1[0] - point2[0])
+    b = (point1[0] * point2[1] - point1[1] *
+         point2[0]) / (point1[0] - point2[0])
     for x in range(0, 7):
         if (x != point1[0]) and (x != point2[0]):
-            y = a*x + b
+            y = a * x + b
             if math.ceil(y) == int(y) and int(y) <= 5:
                 line.append((x, int(y)))
     if (len(line) > 2):
         return line
     return
+
 
 print(get_line_all_points((1, 2), (2, 4)))
 
@@ -312,19 +334,20 @@ def suma():
     a = [123, 123]
     return a
 
-print(suma())
-exit();
 
-print ('\n'.join([''.join([('SunHuachuang'[(x-y)%8] if ((x*0.05)**2+(y*0.1)**2-1)**3-(x*0.05)**2*(y*0.1)**3 <= 0 else ' ' ) for x in range(-30,30)])for y in range(15,-15,-1)] ))
+print(suma())
+exit()
+
+print('\n'.join([''.join([('SunHuachuang'[(x - y) % 8] if ((x * 0.05)**2 + (y * 0.1)**2 - 1)**3 -
+                           (x * 0.05)**2 * (y * 0.1)**3 <= 0 else ' ') for x in range(-30, 30)])for y in range(15, -15, -1)]))
 
 exit()
 
 for i in range(4, 20):
-    print("test"+str(i)+";test"+str(i)+"@example.com;"+str(i))
-
+    print("test" + str(i) + ";test" + str(i) + "@example.com;" + str(i))
 
 
 exit()
-print ("aaaaaa")
+print("aaaaaa")
 with open('aaa') as o:
-    print (o.readlines())
+    print(o.readlines())
