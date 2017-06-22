@@ -294,3 +294,50 @@ with closing(open('xx', 'r')) as f:
 
 
 # 装饰器
+class Test:
+    def __init__(self, func):
+        self._func = func
+
+    def __call__(self, *args):
+        args = filter(bool, args)
+        self._func(*args)
+
+
+@Test
+def check_args(*args):
+    print(args)
+
+
+def add_action(cls):
+    cls.add_action = staticmethod(lambda: "add_action")
+    return cls
+
+
+@add_action
+class Test:
+    pass
+
+
+print(Test.add_action())
+
+# 元类
+Date = type("Date", (object,), {'x': 1, 'y': lambda x: x + 1})
+
+print(Date.x)
+print(Date.y(1))
+
+
+class InjectMeta(type):
+    def __new__(cls, name, bases, attrs):
+        t = type.__new__(cls, name, bases, attrs)
+
+        def print_id(self):
+            print(hex(id(self)))
+        t.print_id = print_id
+        t.s = "hello"
+
+        return t
+
+
+class Test:
+    __metaclass__ = InjectMeta
