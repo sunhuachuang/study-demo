@@ -13,8 +13,9 @@ class MainHandler(tornado.web.RequestHandler):
 
     def post(self):
         url = self.get_argument("url")
-        title = get(url)
-        return self.write(title)
+        text = ''
+        get(url)
+        return self.write(text)
 
 
 application = tornado.web.Application([
