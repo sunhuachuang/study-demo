@@ -1,15 +1,15 @@
 #! /usr/bin/python3
 
-for i in range(10): # 0 1 2 3 4 5 6 7 8 9
+for i in range(10):  # 0 1 2 3 4 5 6 7 8 9
     print(i)
 
-for i in range(2, 3): # 2
+for i in range(2, 3):  # 2
     print(i)
 
 a = ['a', 'b', 'c']
 
 for i in a:
-    print(i) #a b c
+    print(i)  # a b c
 
 s = 'abcd'
 
@@ -39,7 +39,6 @@ print(isinstance(s, Iterable))
 # string list dict set tuple  __iter__(object)
 
 
-
 # slice
 
 s = 'abcdefgh'
@@ -49,4 +48,4 @@ print(s[1:])   # bcdefgh
 print(s[-1:])  # h
 print(s[:])    # abcdefgh
 print(s[1:4])  # bcd
-print(s[1::4]) # bf
+print(s[1::4])  # bf

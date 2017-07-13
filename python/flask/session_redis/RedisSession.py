@@ -5,6 +5,7 @@ from redis import Redis
 from werkzeug.datastructures import CallbackDict
 from flask.sessions import SessionInterface, SessionMixin
 
+
 class RedisSession(CallbackDict, SessionMixin):
     def __init__(self, initial=None, sid=None, new=False):
         def on_update(self):
@@ -13,6 +14,7 @@ class RedisSession(CallbackDict, SessionMixin):
         self.sid = sid
         self.new = new
         self.modified = False
+
 
 class RedisSessionInterface(SessionInterface):
     serializer = pickle
@@ -53,5 +55,7 @@ class RedisSessionInterface(SessionInterface):
         redis_exp = self.get_redis_expiration_time(app, session)
         cookie_exp = self.get_expiration_time(app, session)
         val = self.serializer.dumps(dict(session))
-        self.redis.setex(self.prefix + session.sid, val, int(redis_exp.total_seconds()))
-        response.set_cookie(app.session_cookie_name, session.sid, expires=cookie_exp, httponly=True, domain=domain)
+        self.redis.setex(self.prefix + session.sid, val,
+                         int(redis_exp.total_seconds()))
+        response.set_cookie(app.session_cookie_name, session.sid,
+                            expires=cookie_exp, httponly=True, domain=domain)

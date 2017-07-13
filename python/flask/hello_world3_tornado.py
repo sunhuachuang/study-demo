@@ -5,9 +5,11 @@ from flask import Flask
 
 app = Flask(__name__)
 
+
 @app.route('/')
 def home():
     return 'hello word'
+
 
 http_server = HTTPServer(WSGIContainer(app))
 http_server.listen(5000)

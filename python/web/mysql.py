@@ -1,5 +1,5 @@
 import mysql.connector
-#mysql-connector-python-rf
+# mysql-connector-python-rf
 
 conn = mysql.connector.connect(user='root', password='sun', database='kg')
 cursor = conn.cursor()

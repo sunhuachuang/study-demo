@@ -9,6 +9,7 @@ s.bind(('127.0.0.1', 9999))
 s.listen(5)
 print('waiting for connected...')
 
+
 def tcplink(sock, addr):
     print('Accept new connection from {}'.format(addr))
     sock.send(b'Welcome')
@@ -20,6 +21,7 @@ def tcplink(sock, addr):
         sock.send(('Hello {}'.format(data.decode('utf-8'))).encode('utf-8'))
     sock.close()
     print('connection {} is closed.'.format(addr))
+
 
 while True:
     sock, addr = s.accept()

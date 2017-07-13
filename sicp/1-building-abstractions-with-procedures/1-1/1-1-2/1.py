@@ -1,10 +1,13 @@
-#variable
+# variable
 x = 10
 y = 20
-print(x+y)
+print(x + y)
 
-#function
+# function
+
+
 def hello():
     print('hello')
+
 
 hello()

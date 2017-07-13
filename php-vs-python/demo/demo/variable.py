@@ -1,4 +1,4 @@
-a = 'aaa';
+a = 'aaa'
 
 a = b = c = 1
 
@@ -15,4 +15,4 @@ aa, bb, cc, *dd = 'a', 'b', 'c', 'd', 1, 2
 aa, bb, cc, *_ = 'a', 'b', 'c', 'd', 1, 2
 
 
-print(dd)  #['d', 1, 2]
+print(dd)  # ['d', 1, 2]

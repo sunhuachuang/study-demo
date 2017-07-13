@@ -9,9 +9,11 @@ from html.parser import HTMLParser
 url = 'http://www.imooc.com/u/'
 regex = re.compile(r'<p class="about-info">([\s\S]*?)</p>')
 
+
 class MyHTMLParser(HTMLParser):
     def handle_data(self, data):
         print(":", data)
+
 
 parser = MyHTMLParser()
 

@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-#注释
+# 注释
 print('aaaa')
 print('this is {}'.format('word'))
 print('this is %s' % 'word')

@@ -6,30 +6,34 @@ import time
 import ssl
 import multiprocessing
 
-#13  发送和接受大型数组  memoryviews
+# 13  发送和接受大型数组  memoryviews
+
+
 def send_from(arr, dest):
     view = memoryview(arr).cast('B')
     while len(view):
         nsent = dest.send(view)
         view = view[nsent:]
+
     def recv_into(arr, source):
         view = memoryview(arr).cast('B')
         while len(view):
             nrecv = source.recv_into(view)
             view = view[nrecv:]
 
+
 # test
-#server
+# server
 from socket import *
 s = socket(AF_INET, SOCK_STREAM)
 s.bind(('', 25000))
 s.listen(1)
-c,a = s.accept()
+c, a = s.accept()
 import numpy
 a = numpy.arange(0.0, 50000000.0)
 send_from(a, c)
 
-#client
+# client
 from socket import *
 c = socket(AF_INET, SOCK_STREAM)
 c.connect(('localhost', 25000))
@@ -39,7 +43,9 @@ a[0:10]
 recv_into(a, c)
 a[0:10]
 
-#12  理解事件驱动的 IO
+# 12  理解事件驱动的 IO
+
+
 class EventHandler:
     def fileno(self):
         'Return the associated file descriptor'
@@ -61,7 +67,9 @@ class EventHandler:
         'Send outgoing data'
         pass
 
+
 import select
+
 
 def event_loop(handlers):
     while True:
@@ -73,8 +81,10 @@ def event_loop(handlers):
         for h in can_send:
             h.handle_send()
 
+
 import socket
 import time
+
 
 class UDPServer(EventHandler):
     def __init__(self, address):
@@ -87,26 +97,29 @@ class UDPServer(EventHandler):
     def wants_to_receive(self):
         return True
 
+
 class UDPTimeServer(UDPServer):
     def handle_receive(self):
         msg, addr = self.sock.recvfrom(1)
         self.sock.sendto(time.ctime().encode('ascii'), addr)
+
 
 class UDPEchoServer(UDPServer):
     def handle_receive(self):
         msg, addr = self.sock.recvfrom(8192)
         self.sock.sendto(msg, addr)
 
+
 if __name__ == '__main__':
-    handlers = [ UDPTimeServer(('',14000)), UDPEchoServer(('',15000))  ]
+    handlers = [UDPTimeServer(('', 14000)), UDPEchoServer(('', 15000))]
     event_loop(handlers)
 
-#test
+# test
 from socket import *
 s = socket(AF_INET, SOCK_DGRAM)
-s.sendto(b'',('localhost',14000))
+s.sendto(b'', ('localhost', 14000))
 s.recvfrom(128)
-s.sendto(b'Hello',('localhost',15000))
+s.sendto(b'Hello', ('localhost', 15000))
 s.recvfrom(128)
 
 
@@ -128,7 +141,9 @@ class TCPServer(EventHandler):
     def handle_receive(self):
         client, addr = self.sock.accept()
         # Add the client to the event loop's handler list
-        self.handler_list.append(self.client_handler(client, self.handler_list))
+        self.handler_list.append(
+            self.client_handler(client, self.handler_list))
+
 
 class TCPClient(EventHandler):
     def __init__(self, sock, handler_list):
@@ -151,6 +166,7 @@ class TCPClient(EventHandler):
         nsent = self.sock.send(self.outgoing)
         self.outgoing = self.outgoing[nsent:]
 
+
 class TCPEchoClient(TCPClient):
     def wants_to_receive(self):
         return True
@@ -162,13 +178,15 @@ class TCPEchoClient(TCPClient):
         else:
             self.outgoing.extend(data)
 
+
 if __name__ == '__main__':
     handlers = []
-    handlers.append(TCPServer(('',16000), TCPEchoClient, handlers))
+    handlers.append(TCPServer(('', 16000), TCPEchoClient, handlers))
     event_loop(handlers)
 
 from concurrent.futures import ThreadPoolExecutor
 import os
+
 
 class ThreadPoolHandler(EventHandler):
     def __init__(self, nworkers):
@@ -197,7 +215,7 @@ class ThreadPoolHandler(EventHandler):
         self.signal_done_sock.send(b'x')
 
     # Run a function in a thread pool
-    def run(self, func, args=(), kwargs={},*,callback):
+    def run(self, func, args=(), kwargs={}, *, callback):
         r = self.pool.submit(func, *args, **kwargs)
         r.add_done_callback(lambda r: self._complete(callback, r))
 
@@ -212,9 +230,11 @@ class ThreadPoolHandler(EventHandler):
             self.done_sock.recv(1)
             self.pending = []
 
-#11  进程间传递 socket 文件描述符  multiprocessing
+
+# 11  进程间传递 socket 文件描述符  multiprocessing
 from multiprocessing.reduction import recv_handle, send_handle
 import socket
+
 
 def worker(in_p, out_p):
     out_p.close()
@@ -229,6 +249,7 @@ def worker(in_p, out_p):
                 print('CHILD: RECV {!r}'.format(msg))
                 s.send(msg)
 
+
 def server(address, in_p, out_p, worker_pid):
     in_p.close()
     s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -241,12 +262,14 @@ def server(address, in_p, out_p, worker_pid):
         send_handle(out_p, client.fileno(), worker_pid)
         client.close()
 
+
 if __name__ == '__main__':
     c1, c2 = multiprocessing.Pipe()
     worker_p = multiprocessing.Process(target=worker, args=(c1, c2))
     worker_p.start()
 
-    server_p = multiprocessing.Process(target=server, args=(('', 20000), c1, c2, worker_p.pid))
+    server_p = multiprocessing.Process(
+        target=server, args=(('', 20000), c1, c2, worker_p.pid))
     server_p.start()
 
     c1.close()
@@ -257,6 +280,7 @@ if __name__ == '__main__':
 from multiprocessing.connection import Listener
 from multiprocessing.reduction import send_handle
 import socket
+
 
 def server(work_address, port):
     # Wait for the worker to connect
@@ -276,6 +300,7 @@ def server(work_address, port):
         send_handle(worker, client.fileno(), worker_pid)
         client.close()
 
+
 if __name__ == '__main__':
     import sys
     if len(sys.argv) != 3:
@@ -292,6 +317,7 @@ from multiprocessing.reduction import recv_handle
 import os
 from socket import socket, AF_INET, SOCK_STREAM
 
+
 def worker(server_address):
     serv = Client(server_address, authkey=b'peekaboo')
     serv.send(os.getpid())
@@ -305,6 +331,7 @@ def worker(server_address):
                     break
                 print('WORKER: RECV {!r}'.format(msg))
                 client.send(msg)
+
 
 if __name__ == '__main__':
     import sys
@@ -321,6 +348,7 @@ import socket
 
 import struct
 
+
 def send_fd(sock, fd):
     '''
     Send a single file descriptor.
@@ -329,6 +357,7 @@ def send_fd(sock, fd):
                  [(socket.SOL_SOCKET, socket.SCM_RIGHTS, struct.pack('i', fd))])
     ack = sock.recv(2)
     assert ack == b'OK'
+
 
 def server(work_address, port):
     # Wait for the worker to connect
@@ -340,13 +369,14 @@ def server(work_address, port):
     # Now run a TCP/IP server and send clients to worker
     s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, True)
-    s.bind(('',port))
+    s.bind(('', port))
     s.listen(1)
     while True:
         client, addr = s.accept()
         print('SERVER: Got connection from', addr)
         send_fd(worker, client.fileno())
         client.close()
+
 
 if __name__ == '__main__':
     import sys
@@ -360,6 +390,7 @@ if __name__ == '__main__':
 import socket
 import struct
 
+
 def recv_fd(sock):
     '''
     Receive a single file descriptor
@@ -372,6 +403,7 @@ def recv_fd(sock):
     sock.sendall(b'OK')
 
     return struct.unpack('i', cmsg_data)[0]
+
 
 def worker(server_address):
     serv = socket.socket(socket.AF_UNIX, socket.SOCK_STREAM)
@@ -387,6 +419,7 @@ def worker(server_address):
                 print('WORKER: RECV {!r}'.format(msg))
                 client.send(msg)
 
+
 if __name__ == '__main__':
     import sys
     if len(sys.argv) != 2:
@@ -396,9 +429,11 @@ if __name__ == '__main__':
     worker(sys.argv[1])
 
 exit(1)
-#10  在网络服务中加入 SSL ssl 模块
+# 10  在网络服务中加入 SSL ssl 模块
 KEYFILE = 'privatekey.pem'
 CERTFILE = 'cert.pem'
+
+
 def echo_client(s):
     while True:
         data = s.recv(8192)
@@ -409,12 +444,14 @@ def echo_client(s):
         s.close()
         print('Connection closed')
 
+
 def echo_server(address):
     s = socket(AF_INET, SOCK_STREAM)
     s.bind(address)
     s.listen(1)
 
-    s_ssl = ssl.wrap_socket(s, keyfile=KEYFILE, certfile=CERTFILE, server_side=True)
+    s_ssl = ssl.wrap_socket(
+        s, keyfile=KEYFILE, certfile=CERTFILE, server_side=True)
 
     while True:
         try:
@@ -424,9 +461,10 @@ def echo_server(address):
         except Exception as e:
             print('{}: {}'.format(e.__class__.__name__, e))
 
+
 echo_server(('', 20000))
 
-#test
+# test
 s = socket(AF_INET, SOCK_STREAM)
 s_ssl = ssl.wrap_socket(s, cert_reqs=ssl.CERT_REQUIRED, ca_certs=CERTFILE)
 s_ssl.connect(('localhost', 20000))
@@ -434,13 +472,17 @@ s_ssl.send(b'aaaa')
 s_ssl.recv()
 
 exit(1)
-#9  简单的客户端认证  hmac
-import os, hmac
+# 9  简单的客户端认证  hmac
+import os
+import hmac
+
+
 def client_authenticate(connection, secert_key):
     message = connection.recv(32)
     hash = hmac.new(secert_key, message)
     digest = hash.digest()
     connection.send(digest)
+
 
 def server_authenticate(connection, secert_key):
     message = os.urandom(32)
@@ -450,8 +492,11 @@ def server_authenticate(connection, secert_key):
     response = connection.recv(len(digest))
     return hmac.compare_digest(digest, response)
 
-#test server
+
+# test server
 secert_key = b'secertsun'
+
+
 def echo_handler(client_sock):
     if not server_authenticate(client_sock, secert_key):
         client_sock.close()
@@ -462,6 +507,7 @@ def echo_handler(client_sock):
             break
         client_sock.sendall(msg)
 
+
 def echo_server(address):
     s = socket(AF_INET, SOCK_STREAM)
     s.bind(address)
@@ -470,9 +516,10 @@ def echo_server(address):
         c, a = s.accept()
         echo_handler(c)
 
+
 echo_server(('', 20000))
 
-#test client
+# test client
 s = socket(AF_INET, SOCK_STREAM)
 s.connect(('localhost', 20000))
 client_authenticate(s, secert_key)
@@ -480,8 +527,10 @@ s.send(b'hello world')
 resp = s.recv(1024)
 
 exit(1)
-#8  实现远程方法调用
+# 8  实现远程方法调用
 import pickle
+
+
 class RPCHandler:
     def __init__(self):
         self._functions = {}
@@ -501,8 +550,11 @@ class RPCHandler:
         except EOFError:
             pass
 
+
 from multiprocessing.connection import Listener
 from threading import Thread
+
+
 def rpc_server(handler, address, authkey):
     sock = Listener(address, authkey=authkey)
     while True:
@@ -511,11 +563,14 @@ def rpc_server(handler, address, authkey):
         t.daemon = True
         t.start()
 
+
 def add(x, y):
     return x + y
 
+
 def sub(x, y):
     return x - y
+
 
 handler = RPCHandler()
 handler.register_function(add)
@@ -523,8 +578,10 @@ handler.register_function(sub)
 
 rpc_server(handler, ('localhost', 20000), authkey=b'sun')
 
-#rpc 发送请求的代理类
+# rpc 发送请求的代理类
 import pickle
+
+
 class RPCProxy:
     def __init__(self, connection):
         self._connection = connection
@@ -539,15 +596,18 @@ class RPCProxy:
             return result
         return do_rpc
 
+
 from multiprocessing.connection import Client
 c = Client(('localhost', 20000), authkey=b'sun')
 proxy = RPCProxy(c)
 proxy.add(2, 3)
 proxy.sub(2, 3)
 
-#7  在不同的 python 解析器之间互动  multiprocessing.connection
+# 7  在不同的 python 解析器之间互动  multiprocessing.connection
 from multiprocessing.connection import Listener
 import traceback
+
+
 def echo_client(conn):
     try:
         while True:
@@ -555,6 +615,7 @@ def echo_client(conn):
             conn.send(msg)
     except EOFError:
         print('Connection closed')
+
 
 def echo_server(address, authkey):
     serv = Listener(address, authkey=authkey)
@@ -564,6 +625,7 @@ def echo_server(address, authkey):
             echo_client(client)
         except Exception:
             traceback.print_exc()
+
 
 echo_server(('', 20000), authkey=b'peekaboo')
 
@@ -575,11 +637,13 @@ c.send('hello')
 c.recv()
 
 exit(1)
-#6  通过 XML-RPC 实现简单的远程调用
+# 6  通过 XML-RPC 实现简单的远程调用
 from xmlrpc.server import SimpleXMLRPCServer
+
 
 class KeyValueServer:
     _rpc_methods_ = ['get', 'set', 'delete', 'exists', 'keys']
+
     def __init__(self, address):
         self._data = {}
         self._serv = SimpleXMLRPCServer(address, allow_none=True)
@@ -604,6 +668,7 @@ class KeyValueServer:
     def serve_forever(self):
         self._serv.serve_forever()
 
+
 if __name__ == '__main__':
     kvserv = KeyValueServer(('', 20000))
     kvserv.serve_forever()
@@ -621,14 +686,17 @@ s.delete('foo')
 s.exists('foo')
 
 exit(1)
-#5  创建一个简单的 rest 接口
+# 5  创建一个简单的 rest 接口
 import cgi
+
 
 def notfound_404(environ, start_response):
     start_response('404 Not found', [('Content-type', 'text/plain')])
     return [b'Not found']
 
 #  调度器
+
+
 class PathDispatcher:
     def __init__(self):
         self.pathmap = {}
@@ -648,6 +716,7 @@ class PathDispatcher:
         self.pathmap[method.lower(), path] = function
         return function
 
+
 _hello_resp = '''
 <html>
    <head>
@@ -659,11 +728,13 @@ _hello_resp = '''
 </html>
 '''
 
+
 def hello_world(environ, start_response):
     start_response('200 OK', [('Content-type', 'text/html')])
     params = environ['params']
     resp = _hello_resp.format(name=params.get('name'))
     yield resp.encode('utf-8')
+
 
 _localtime_resp = '''\
  <?xml version="1.0"?>
@@ -676,10 +747,13 @@ _localtime_resp = '''\
    <second>{t.tm_sec}</second>
  </time>
 '''
+
+
 def localtime(environ, start_response):
-    start_response('200 OK', [ ('Content-type', 'application/xml') ])
+    start_response('200 OK', [('Content-type', 'application/xml')])
     resp = _localtime_resp.format(t=time.localtime())
     yield resp.encode('utf-8')
+
 
 if __name__ == '__main__':
     from wsgiref.simple_server import make_server
@@ -692,30 +766,32 @@ if __name__ == '__main__':
     httpd.serve_forever()
 
 exit(1)
-#4  通过 CIDR 地址生成对应的 IP 地址集  ipaddress 模块
+# 4  通过 CIDR 地址生成对应的 IP 地址集  ipaddress 模块
 import ipaddress
 net = ipaddress.ip_network('123.45.67.64/27')
-print(net) # IPv4Network('123.45.67.64/27')
+print(net)  # IPv4Network('123.45.67.64/27')
 for n in net:
     pass
-#print(n)
+# print(n)
 
-print(net.num_addresses)        #32
-print(net[0])                   #123.45.67.64
-print(net[net.num_addresses-1]) #123.45.67.95
+print(net.num_addresses)  # 32
+print(net[0])  # 123.45.67.64
+print(net[net.num_addresses - 1])  # 123.45.67.95
 
 a = ipaddress.ip_address('123.45.67.65')
-print(a in net) # True
+print(a in net)  # True
 b = ipaddress.ip_address('123.45.67.96')
-print(b in net) # False
+print(b in net)  # False
 
 inet = ipaddress.ip_interface('123.45.67.64/27')
-print(type(inet)) #<class 'ipaddress.IPv4Interface'>
-print(inet.network) #123.45.67.64/27 str()
-print(inet.ip) #123.45.67.64
+print(type(inet))  # <class 'ipaddress.IPv4Interface'>
+print(inet.network)  # 123.45.67.64/27 str()
+print(inet.ip)  # 123.45.67.64
 
 exit(1)
-#3  创建 UDP 服务器
+# 3  创建 UDP 服务器
+
+
 class TimeHandler(BaseRequestHandler):
     def handle(self):
         print('Got connection from', self.client_address)
@@ -723,13 +799,16 @@ class TimeHandler(BaseRequestHandler):
         resp = time.ctime()
         sock.sendto(resp.encode('ascii'), self.client_address)
 
+
 if __name__ == '__main__':
     serv = UDPServer(('', 20000), TimeHandler)
     serv.serve_forever()
 
 exit(1)
 
-#2  创建 tcp 服务器  socketserver
+# 2  创建 tcp 服务器  socketserver
+
+
 class EchoHandler(BaseRequestHandler):
     def handle(self):
         print('Got connection from', self.client_address)
@@ -739,15 +818,17 @@ class EchoHandler(BaseRequestHandler):
                 break
             self.request.send(msg)
 
+
 class StreamHandler(StreamRequestHandler):
     def handle(self):
         print('Got connection from', self.client_address)
         for line in self.rfile:
             self.wfile.write(line)
 
+
 if __name__ == '__main__':
-    serv = TCPServer(('', 20000), EchoHandler) # 单用户
-    #serv = ThreadingTCPServer(('', 20000), EchoHandler) 多用户
+    serv = TCPServer(('', 20000), EchoHandler)  # 单用户
+    # serv = ThreadingTCPServer(('', 20000), EchoHandler) 多用户
     serv.serve_forever()
 
 # security action
@@ -763,6 +844,8 @@ if __name__ == '__main__':
 
 #  服务器实现
 from socket import socket, AF_INET, SOCK_STREAM
+
+
 def echo_handler(address, client_sock):
     print('Got connetction from {}'.format(address))
     while True:
@@ -772,6 +855,7 @@ def echo_handler(address, client_sock):
         client_sock.sendall(msg)
         client_sock.close()
 
+
 def echo_server(address, backlog=5):
     sock = socket(AF_INET, SOCK_STREAM)
     sock.bind(address)
@@ -780,11 +864,12 @@ def echo_server(address, backlog=5):
         client_sock, client_addr = sock.accept()
         echo_handler(client_addr, client_sock)
 
+
 if __name__ == '__main__':
     echo_server(('', 20000))
 
 exit(1)
-#1  作为客户端与 ｈｔｔｐ 服务交互 　 测试站点  http://httpbin.org
+# 1  作为客户端与 ｈｔｔｐ 服务交互 　 测试站点  http://httpbin.org
 url = 'http://127.0.0.1:5000/'
 
 params = {
@@ -806,9 +891,9 @@ print(resp)
 
 # header
 headers = {
-     'User-agent': 'none/ofyourbusiness',
-     'Spam': 'Eggs',
-     'Token': 'aaaaaaaa'
+    'User-agent': 'none/ofyourbusiness',
+    'Spam': 'Eggs',
+    'Token': 'aaaaaaaa'
 }
 
 req = request.Request(url, querystring.encode('ascii'), headers=headers)
@@ -824,13 +909,13 @@ print(text)
 # headers
 resp = requests.head('https://www.python.org/')
 print(resp.status_code)
-#print(resp.headers['last-modified'])
+# print(resp.headers['last-modified'])
 print(resp.headers['content-type'])
 print(resp.headers['content-length'])
 
 # login auth
 resp = requests.get('http://pypi.python.org/pypi?:action=login',
-                    auth=('user','password'))
+                    auth=('user', 'password'))
 print(resp)
 
 # cookies
@@ -854,7 +939,7 @@ for name, value in resp.getheaders():
 
 #　 实现 auth
 auth = urllib.request.HTTPBasicAuthHandler()
-auth.add_password('pypi','http://pypi.python.org','username','password')
+auth.add_password('pypi', 'http://pypi.python.org', 'username', 'password')
 opener = urllib.request.build_opener(auth)
 
 r = urllib.request.Request('http://pypi.python.org/pypi?:action=login')

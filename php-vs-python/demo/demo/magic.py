@@ -7,17 +7,20 @@ l = [1, 2, 3, 4]
 for i in l:
     print(i)
 
+
 def create_iter():
     a = 0
     while a < 10:
         yield a
         a += 1
 
+
 for i in create_iter():
     print(i)
 
 
 from functools import wraps
+
 
 def check(func):
     @wraps(func)
@@ -26,6 +29,7 @@ def check(func):
             return func(x)
         raise TypeError('Not int type')
     return wrapper
+
 
 @check
 def add_one(x):
@@ -47,6 +51,7 @@ class A:
 
     def __len__(self):
         return len(self.__dict__)
+
 
 a = A(1, 2)
 

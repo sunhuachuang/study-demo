@@ -1,5 +1,6 @@
 #! /usr/bin/python3
 
+
 class A:
     __private = 'aa'
 
@@ -17,12 +18,14 @@ class A:
     def getPrivate(self):
         return self.__private
 
+
 a = A('sun', 2, 'hello')
 print(a.name)
 print(a._age)
 # print(a.__say)
 print(a.getSay())
 print(a.getPrivate())
+
 
 class B(A):
     def __init__(self, name, age, say):
@@ -35,6 +38,7 @@ class B(A):
     @classmethod
     def getclassmethod(cls):
         print('class method')
+
 
 b = B('hua', 4, 'world')
 

@@ -4,8 +4,10 @@ def log(func):
         return func(*args, **kw)
     return wrapper
 
-@log # now = log(now)
+
+@log  # now = log(now)
 def now():
     print('this is now')
+
 
 now()
