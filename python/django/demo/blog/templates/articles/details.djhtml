@@ -1,0 +1,9 @@
+{% extends "base.djhtml" %}
+
+{% block content %}
+  {{ article.id }} <br>
+  {{ article.value }} <br>
+  {{ article.pub_date|date }} <br>
+
+  {{ article.category.name }}
+{% endblock %}

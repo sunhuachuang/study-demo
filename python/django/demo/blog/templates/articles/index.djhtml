@@ -1,0 +1,8 @@
+{% extends "base.djhtml" %}
+
+{% block content %}
+  {% for article in articles %}
+    {{ article.id }} <br>
+    <a href="{% url "articles_details" article.id %}">{{ article.value }}</a><br>
+  {% endfor %}
+{% endblock %}
