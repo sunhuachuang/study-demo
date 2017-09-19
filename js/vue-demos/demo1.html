@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8"/>
+        <title>Document</title>
+    </head>
+    <body>
+        <div id="app">
+            {{ message }}
+        </div>
+        <div id="app2">
+            <span v-bind:title="message">
+                悬停出现
+            </span>
+        </div>
+    </body>
+    <script src="./vue.js"></script>
+    <script>
+     var app = new Vue({
+         el: '#app',
+         data: {
+             message: "Hello, Vue!"
+         }
+     });
+     var app2 = new Vue({
+         el: '#app2',
+         data: {
+             message: "time is " + new Date().toLocaleString()
+         }
+     });
+    </script>
+</html>
