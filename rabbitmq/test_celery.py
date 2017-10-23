@@ -1,10 +1,10 @@
 from celery import Celery
+import datetime
 
 app = Celery('hello', broker='amqp://guest@localhost//',
              backend="amqp://guest@localhost//")
 
 
 @app.task
-def hello():
-    for i in range(10):
-        yield i
+def hello(a):
+    print(datetime.datetime.now())

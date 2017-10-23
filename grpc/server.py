@@ -11,6 +11,10 @@ _PORT = '8080'
 class FormatData(data_pb2_grpc.FormatDataServicer):
     def DoFormat(self, request, context):
         str = request.text
+        print('got: ' + str)
+        str += ' aaaa'
+        time.sleep(5)
+        print('send')
         return data_pb2.Data(text=str.upper())
 
 
