@@ -7,4 +7,4 @@ defmodule Parallel do
 end
 
 result = Parallel.pmap 1..10, &(&1 * &1)
-# IO.puts result
+IO.puts result

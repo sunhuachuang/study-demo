@@ -4,6 +4,20 @@ import os
 import sys
 import re
 
+f = os.path.dirname('.')
+ff = os.path.dirname('..')
+
+
+print(f)
+print(ff)
+
+if f == ff:
+    print('ok')
+else:
+    print('fail')
+
+exit(0)
+
 
 class Test:
     def __init__(self, name):

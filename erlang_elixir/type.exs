@@ -21,15 +21,24 @@ e1 = "abc字"
 IO.puts byte_size e1     # 6 UTF-8
 IO.puts String.length e1 # 4
 
-IO.puts "__list and tuple:"
+IO.puts "__list and tuple: 链表"
 f = [1, 2, 3] # list
 g = ["a", true, 1]
 IO.puts (List.last g) * (List.first f)
 IO.puts length f
+ff = f ++ g
+IO.puts hd tl ff
+Enum.map(ff, fn x -> IO.write x end)
+IO.puts ''
+IO.puts hd ff
 
 
-h = {1, 2, 3} # tuple
+h = {1, 2, 3} # tuple 连续空间段，数组
 IO.puts List.last Tuple.to_list h
+{ok, msg} = File.read('./test')
+
+## *_size 用于对常数范围的长度取值 byte_size tuple_size
+## *_length 用于需要遍历的长度取值 String.length length
 
 IO.puts "__functions:"
 # function
